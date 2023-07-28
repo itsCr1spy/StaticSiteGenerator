@@ -6,8 +6,10 @@ import { Eta } from "eta";
 const app = express();
 const port = 3000;
 
+// Set the views directory for templates
 let viewpath = path.join(__dirname, "views"); 
 
+// Configure Eta options
 const etaOptions = {
   views: viewpath,
   cache: true,
@@ -16,14 +18,17 @@ const etaOptions = {
 
 const eta: Eta = new Eta(etaOptions);
 
+// Configure Express to use the Eta template engine
 app.engine("eta", ()=>{
   eta.render
 });
 
 app.set("view engine", "eta");
 
+// API URL
 const apiUrl = "https://www.boredapi.com/api/activity";
 
+// Interface for the data fetched from the API
 interface ActivityData {
   activity: string;
   type: string;
@@ -33,6 +38,7 @@ interface ActivityData {
   accessibility: number;
 }
 
+// Function to fetch data from the API
 async function fetchData(): Promise<ActivityData | null> {
   try {
     const response = await axios.get<ActivityData>(apiUrl);
@@ -43,14 +49,15 @@ async function fetchData(): Promise<ActivityData | null> {
   }
 }
 
+// Function to generate 10 unique pages
 async function generatePages(): Promise<void> {
   const uniqueData: ActivityData[] = [];
   let count = 0;
 
   while (count < 10) {
     const data = await fetchData();
-
     
+    // Check if the fetched data is not null and not already in uniqueData array
     if (data && !uniqueData.some((item) => item.activity === data.activity)) {
       uniqueData.push(data);
       count++;
@@ -58,6 +65,7 @@ async function generatePages(): Promise<void> {
   }
   console.log(uniqueData)
   
+  // Loop to create routes for each unique page
   for (let i = 0; i < 10; i++) {
     app.get(`/page${i + 1}`, async (req: Request, res: Response) => {
       if (uniqueData[i]) {
@@ -68,8 +76,10 @@ async function generatePages(): Promise<void> {
     });
   }
 }
+
 generatePages();
 
+// Start the Express server
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
 });

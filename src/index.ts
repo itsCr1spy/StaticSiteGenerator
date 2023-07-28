@@ -43,10 +43,32 @@ async function fetchData(): Promise<ActivityData | null> {
   }
 }
 
-app.get("/", async (req: Request, res: Response) => {
-  const data = await fetchData();
-  res.send(eta.render("index", { data }));
-});
+async function generatePages(): Promise<void> {
+  const uniqueData: ActivityData[] = [];
+  let count = 0;
+
+  while (count < 10) {
+    const data = await fetchData();
+
+    
+    if (data && !uniqueData.some((item) => item.activity === data.activity)) {
+      uniqueData.push(data);
+      count++;
+    }
+  }
+  console.log(uniqueData)
+  
+  for (let i = 0; i < 10; i++) {
+    app.get(`/page${i + 1}`, async (req: Request, res: Response) => {
+      if (uniqueData[i]) {
+        res.send(eta.render("index", { data: uniqueData[i] }));
+      } else {
+        res.status(500).send("Internal Server Error: Data not available");
+      }
+    });
+  }
+}
+generatePages();
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);

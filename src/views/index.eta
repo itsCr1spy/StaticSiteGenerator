@@ -16,6 +16,10 @@
               <h3 class="key-heading"><%= data.key %></h3>
               <h1 class="main-heading"><%= data.activity %></h1>
               <h2 class="sub-heading">Outdoor & Sporting Goods Company</h2>
+               <div class="price-card-mobile">
+                <h3 class="price-text-content">Price</h3>
+                <h3 class="price-text-value"><%= data.price %></h3>
+              </div>
             </div>
             <div class="button-container">
               <button>

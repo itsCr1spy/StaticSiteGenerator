@@ -55,35 +55,41 @@ async function generatePages(): Promise<void> {
   const uniqueData: ActivityData[] = [];
   let count = 0;
 
+  // Function to render a page based on the index
+  async function renderPage(index: number) {
+    if (uniqueData[index]) {
+      console.log(index," --- ",uniqueData[index])
+      app.get(`/page${index + 1}`, async (req: Request, res: Response) => {
+        res.send(eta.render("index", { data: uniqueData[index] }));
+      });
+    } else {
+      app.get(`/page${index + 1}`, (req: Request, res: Response) => {
+        res.status(500).send("Internal Server Error: Data not available");
+      });
+    }
+  }
+
+  // Loop to generate unique data and render pages
   while (count < 10) {
     const data = await fetchData();
 
     // Check if the fetched data is not null and not already in uniqueData array
     if (data && !uniqueData.some((item) => item.activity === data.activity)) {
       uniqueData.push(data);
+      renderPage(count);
       count++;
     }
   }
-  console.log(uniqueData);
-
-  // Loop to create routes for each unique page
-  for (let i = 0; i < 10; i++) {
-    app.get(`/page${i + 1}`, async (req: Request, res: Response) => {
-      if (uniqueData[i]) {
-        res.send(eta.render("index", { data: uniqueData[i] }));
-      } else {
-        res.status(500).send("Internal Server Error: Data not available");
-      }
-    });
-  }
+  // console.log(uniqueData);
 }
+
 const rootDir = process.cwd();
-console.log(path.join(rootDir, "public"))
+// console.log(path.join(rootDir, "public"));
 app.use(express.static(path.join(rootDir, "public")));
 
 generatePages();
 
 // Start the Express server
 app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`);
+  console.log(`App listening on port ${port}`);
 });

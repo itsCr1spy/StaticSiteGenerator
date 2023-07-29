@@ -50,24 +50,10 @@ async function fetchData(): Promise<ActivityData | null> {
   }
 }
 
-// Function to generate 10 unique pages
+// Function to generate 10 unique pages (build config)
 async function generatePages(): Promise<void> {
   const uniqueData: ActivityData[] = [];
   let count = 0;
-
-  // Function to render a page based on the index
-  async function renderPage(index: number) {
-    if (uniqueData[index]) {
-      // console.log(index," --- ",uniqueData[index])
-      app.get(`/page${index + 1}`, async (req: Request, res: Response) => {
-        res.send(eta.render("index", { data: uniqueData[index] }));
-      });
-    } else {
-      app.get(`/page${index + 1}`, (req: Request, res: Response) => {
-        res.status(500).send("Internal Server Error: Data not available");
-      });
-    }
-  }
 
   // Loop to generate unique data and render pages
   while (count < 10) {
@@ -76,11 +62,19 @@ async function generatePages(): Promise<void> {
     // Check if the fetched data is not null and not already in uniqueData array
     if (data && !uniqueData.some((item) => item.activity === data.activity)) {
       uniqueData.push(data);
-      renderPage(count);
       count++;
     }
   }
-  // console.log(uniqueData);
+
+  // Catch-all route to handle all page requests
+  app.get("/:pageId", (req: Request, res: Response) => {
+    const pageId = parseInt(req.params.pageId);
+    if (!isNaN(pageId) && pageId >= 1 && pageId <= 10 && uniqueData[pageId - 1]) {
+      res.send(eta.render("index", { data: uniqueData[pageId - 1] }));
+    } else {
+      res.status(404).send("Page not found");
+    }
+  });
 }
 
 const rootDir = process.cwd();

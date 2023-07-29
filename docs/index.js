@@ -48,38 +48,30 @@ function fetchData() {
         }
     });
 }
-// Function to generate 10 unique pages
+// Function to generate 10 unique pages (build config)
 function generatePages() {
     return __awaiter(this, void 0, void 0, function* () {
         const uniqueData = [];
         let count = 0;
-        // Function to render a page based on the index
-        function renderPage(index) {
-            return __awaiter(this, void 0, void 0, function* () {
-                if (uniqueData[index]) {
-                    // console.log(index," --- ",uniqueData[index])
-                    exports.app.get(`/page${index + 1}`, (req, res) => __awaiter(this, void 0, void 0, function* () {
-                        res.send(eta.render("index", { data: uniqueData[index] }));
-                    }));
-                }
-                else {
-                    exports.app.get(`/page${index + 1}`, (req, res) => {
-                        res.status(500).send("Internal Server Error: Data not available");
-                    });
-                }
-            });
-        }
         // Loop to generate unique data and render pages
         while (count < 10) {
             const data = yield fetchData();
             // Check if the fetched data is not null and not already in uniqueData array
             if (data && !uniqueData.some((item) => item.activity === data.activity)) {
                 uniqueData.push(data);
-                renderPage(count);
                 count++;
             }
         }
-        // console.log(uniqueData);
+        // Catch-all route to handle all page requests
+        exports.app.get("/:pageId", (req, res) => {
+            const pageId = parseInt(req.params.pageId);
+            if (!isNaN(pageId) && pageId >= 1 && pageId <= 10 && uniqueData[pageId - 1]) {
+                res.send(eta.render("index", { data: uniqueData[pageId - 1] }));
+            }
+            else {
+                res.status(404).send("Page not found");
+            }
+        });
     });
 }
 const rootDir = process.cwd();

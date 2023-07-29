@@ -39,13 +39,25 @@
               </div>
             </div>
           </div>
-          <div class="activity1-container">
-            <img
-              class="activity1"
-              src="/Activity_Stock_1.png"
-              alt="Activity1"
-            />
-            <img class="logo" src="/LogoGroup.png" alt="logo" />
+          <div class="hello">
+            <div class="activity1-container">
+              <img
+                class="activity1"
+                src="/Activity_Stock_1.png"
+                alt="Activity1"
+              />
+              <img class="logo" src="/LogoGroup.png" alt="logo" />
+            </div>
+            <div class="activity2-container">
+              <div class="backpack-image">
+                <img class="backpack" src="/Backpack.png" alt="backpack" />
+              </div>
+              <img
+                class="activity2"
+                src="/Activity_Stock_2.png"
+                alt="Activity2"
+              />
+            </div>
           </div>
         </div>
         <div class="footer-container">

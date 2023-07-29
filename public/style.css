@@ -33,13 +33,14 @@ h3 {
 }
 
 .title-container {
-  width: 80%;
+  /* width: 80%; */
   max-width: 70rem;
   background-color: white;
   margin: 1rem;
   padding: 1rem;
   display: flex;
   flex-direction: column;
+  flex:1
 }
 
 .sub-container {
@@ -168,18 +169,20 @@ button:hover {
   margin: 0rem;
   padding: 0rem;
   height: 80%;
-  /* width: 100%;
-  max-width: 25rem; */
   aspect-ratio: 1/2;
 }
 
 .activity1-container {
   display: flex;
-  justify-content: center;
+  justify-content: flex-end;
   align-items: flex-end;
   margin: 0rem;
   padding: 0rem;
+  height: 100%;
 }
+/* .hello{
+  flex:1
+} */
 
 .backpack-image {
   display: flex;
@@ -230,5 +233,43 @@ button:hover {
 
 .logo{
   position: absolute;
-  transform: translate(8.5rem,-7rem);
+  transform: translate(3rem,-8rem);
+}
+
+@media (min-width:720px) {
+  .activity2-container{
+    display: none;
+  }
+}
+
+@media (max-width:720px) {
+  .sub-container{
+    display: flex;
+    flex-direction: column;
+  }
+  .activity1-container{
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+  }
+  .activity2-container{
+    display: flex;
+    flex-direction: column;
+  }
+  .image-container{
+    display: none;
+  }
+  .hello{
+    display: flex;
+  }
+  .activity1{
+    height: 100%;
+  }
+  .logo{
+    position: absolute;
+    transform: translate(19.25rem,9.5rem);
+  }
+  .activity2{
+    height: 100%;
+  }
 }

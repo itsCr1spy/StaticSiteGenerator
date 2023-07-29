@@ -3,7 +3,7 @@ import path from "path";
 import axios from "axios";
 import { Eta } from "eta";
 
-const app = express();
+export const app = express();
 const port = 3000;
 
 // Set the views directory for templates
@@ -58,7 +58,7 @@ async function generatePages(): Promise<void> {
   // Function to render a page based on the index
   async function renderPage(index: number) {
     if (uniqueData[index]) {
-      console.log(index," --- ",uniqueData[index])
+      // console.log(index," --- ",uniqueData[index])
       app.get(`/page${index + 1}`, async (req: Request, res: Response) => {
         res.send(eta.render("index", { data: uniqueData[index] }));
       });
@@ -93,3 +93,4 @@ generatePages();
 app.listen(port, () => {
   console.log(`App listening on port ${port}`);
 });
+

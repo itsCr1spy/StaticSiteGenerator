@@ -7,20 +7,20 @@ const app = express();
 const port = 3000;
 
 // Set the views directory for templates
-let viewpath = path.join(__dirname, "views"); 
+let viewpath = path.join(__dirname, "views");
 
 // Configure Eta options
 const etaOptions = {
   views: viewpath,
   cache: true,
-  useWith: true
+  useWith: true,
 };
 
 const eta: Eta = new Eta(etaOptions);
 
 // Configure Express to use the Eta template engine
-app.engine("eta", ()=>{
-  eta.render
+app.engine("eta", () => {
+  eta.render;
 });
 
 app.set("view engine", "eta");
@@ -36,6 +36,7 @@ interface ActivityData {
   price: number;
   link: string;
   accessibility: number;
+  key: number;
 }
 
 // Function to fetch data from the API
@@ -43,7 +44,7 @@ async function fetchData(): Promise<ActivityData | null> {
   try {
     const response = await axios.get<ActivityData>(apiUrl);
     return response.data;
-  } catch (error:any) {
+  } catch (error: any) {
     console.error("Error fetching data:", error.message);
     return null;
   }
@@ -56,15 +57,15 @@ async function generatePages(): Promise<void> {
 
   while (count < 10) {
     const data = await fetchData();
-    
+
     // Check if the fetched data is not null and not already in uniqueData array
     if (data && !uniqueData.some((item) => item.activity === data.activity)) {
       uniqueData.push(data);
       count++;
     }
   }
-  console.log(uniqueData)
-  
+  console.log(uniqueData);
+
   // Loop to create routes for each unique page
   for (let i = 0; i < 10; i++) {
     app.get(`/page${i + 1}`, async (req: Request, res: Response) => {
@@ -76,6 +77,9 @@ async function generatePages(): Promise<void> {
     });
   }
 }
+const rootDir = process.cwd();
+console.log(path.join(rootDir, "public"))
+app.use(express.static(path.join(rootDir, "public")));
 
 generatePages();
 

@@ -2,8 +2,6 @@
   "compilerOptions": {
     "target": "es6",
     "module": "commonjs",
-    "outDir": "./docs",
-    "rootDir": "src",
     "strict": true,
     "esModuleInterop": true
   },
